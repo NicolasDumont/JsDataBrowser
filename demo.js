@@ -1,8 +1,8 @@
 //PARSER:
 var stepped = 0, rowCount = 0, errorCount = 0, firstError;
 var start, end;
-var firstRun = true;
-var maxUnparseLength = 10000;
+//var firstRun = true;
+//var maxUnparseLength = 10000;
 var parseConfig = {
     /*delimiter: $('#delimiter').val(),
      header: $('#header').prop('checked'),
@@ -159,7 +159,7 @@ $(function()
 
     //EDITOR:
     //alert("in $(function()");
-    var aceRange = ace.require('ace/range').Range;
+    var aceRange = ace.require('ace/range').Range;  //http://stackoverflow.com/questions/10452869/when-i-try-to-create-a-range-object-in-ace-js-an-illegal-constructor-error-is
     var editor = ace.edit("editor");
     editor.getSession().selection.on('changeCursor', function(e)
     {
