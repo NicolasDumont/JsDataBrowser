@@ -18,9 +18,9 @@ var parseConfig = {
 };
 
 //EDITOR:
-var marker;
+var textMarker;
 
-    $(function()
+$(function()
 {
 	/*// Tabs
 	$('#tab-string').click(function()
@@ -158,17 +158,21 @@ var marker;
 	});
 
     //EDITOR:
+    //alert("in $(function()");
+    var aceRange = ace.require('ace/range').Range;
     var editor = ace.edit("editor");
     editor.getSession().selection.on('changeCursor', function(e)
     {
-        console.log("Row: " + editor.selection.getCursor().row + " Column: " + editor.selection.getCursor().column);
-        if (marker) editor.getSession().removeMarker(marker);
+        //console.log("Row: " + editor.selection.getCursor().row + " Column: " + editor.selection.getCursor().column);
+        if (textMarker) editor.session.removeMarker(textMarker);
         var rowStart = editor.selection.getCursor().row;
         var rowEnd = editor.selection.getCursor().row;
         var columnStart = editor.selection.getCursor().column;
         var columnEnd = editor.selection.getCursor().column + 2;
-        var range = new Range(rowStart, columnStart, rowEnd, columnEnd);
-        marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
+        //var range = new Range(rowStart, columnStart, rowEnd, columnEnd);
+        //marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
+        //state.highlightMarker = session.addMarker(adjRangeAce,"ace_selection", "text");
+        textMarker = editor.session.addMarker(new aceRange(rowStart, columnStart, rowEnd, columnEnd), "ace_selection", "text"); //"ace_active-line", "fullLine");
     });
     /*editor.commands.addCommand({
         name: 'myCommand',
