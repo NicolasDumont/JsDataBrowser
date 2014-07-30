@@ -161,6 +161,9 @@ $(function()
     //alert("in $(function()");
     var aceRange = ace.require('ace/range').Range;  //http://stackoverflow.com/questions/10452869/when-i-try-to-create-a-range-object-in-ace-js-an-illegal-constructor-error-is
     var editor = ace.edit("editor");
+    //var TokenTooltip = require("./token_tooltip").TokenTooltip;
+    var TokenTooltip = ace.require('ace/tokentooltip').TokenTooltip;
+    editor.tokenTooltip = new TokenTooltip(editor);
     editor.getSession().selection.on('changeCursor', function(e)
     {
         //console.log("Row: " + editor.selection.getCursor().row + " Column: " + editor.selection.getCursor().column);
@@ -173,6 +176,7 @@ $(function()
         //marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
         //state.highlightMarker = session.addMarker(adjRangeAce,"ace_selection", "text");
         textMarker = editor.session.addMarker(new aceRange(rowStart, columnStart, rowEnd, columnEnd), "ace_selection", "text"); //"ace_active-line", "fullLine");
+        editor.tokenTooltip.show(editor.text, 10, 10);
     });
     /*editor.commands.addCommand({
         name: 'myCommand',
