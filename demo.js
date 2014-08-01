@@ -16,6 +16,7 @@ var parseConfig = {
      error: errorFn,
      download: inputType == "remote"*/
 };
+//var dataLayout =
 
 //EDITOR:
 var textMarker;
@@ -164,6 +165,7 @@ $(function()
     //var TokenTooltip = require("./token_tooltip").TokenTooltip;
     var TokenTooltip = ace.require('ace/tokentooltip').TokenTooltip;
     editor.tokenTooltip = new TokenTooltip(editor);
+    editor.tokenTooltip.setText("");
     editor.getSession().selection.on('changeCursor', function(e)
     {
         //console.log("Row: " + editor.selection.getCursor().row + " Column: " + editor.selection.getCursor().column);
@@ -176,7 +178,10 @@ $(function()
         //marker = editor.getSession().addMarker(range,"ace_selected_word", "text");
         //state.highlightMarker = session.addMarker(adjRangeAce,"ace_selection", "text");
         textMarker = editor.session.addMarker(new aceRange(rowStart, columnStart, rowEnd, columnEnd), "ace_selection", "text"); //"ace_active-line", "fullLine");
-        editor.tokenTooltip.show(editor.text, 10, 10);
+        //editor.tokenTooltip.show(editor.text, 10, 10);
+        //var s = editor.getSelectedText();
+        //if (s != "")
+        editor.tokenTooltip.setText(editor.getSelectedText());
     });
     /*editor.commands.addCommand({
         name: 'myCommand',
@@ -226,4 +231,9 @@ function completeFn(results)
     var csv = Papa.unparse(results);
     console.log("    Delimiter: " + results.meta.delimiter);
     editor.setValue(csv);
+}
+
+function hoveredItem()
+{
+
 }
