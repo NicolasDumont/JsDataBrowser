@@ -16,7 +16,96 @@ var parseConfig = {
      error: errorFn,
      download: inputType == "remote"*/
 };
-//var dataLayout =
+
+//DATA LAYOUT:
+/**
+ * Performs a binary search on the host array.
+ * http://oli.me.uk/2013/06/08/searching-javascript-arrays-with-a-binary-search/
+ * -> http://googleresearch.blogspot.be/2006/06/extra-extra-read-all-about-it-nearly.html
+ * This method can either be injected into Array.prototype or called with a specified scope like this:
+ * binaryIndexOf.call(someArray, searchElement);
+ *
+ * @param {*} searchElement The item to search for within the array.
+ * @return {Number} The index of the element which defaults to -1 when not found.
+ *
+ * Array.prototype.binaryIndexOf = binaryIndexOf;
+ * var arr = [0, 1, 2, 4, 5, 6, 6.5, 7, 8, 9];
+ * arr.splice(Math.abs(arr.binaryIndexOf(3)), 0, 3);
+ * document.body.textContent = JSON.stringify(arr);
+ */
+binaryIndexOf=function (key) {
+    'use strict';
+
+    var low = 0;
+    var high = this.length - 1;
+    var mid;
+    var midVal;
+
+    while (low <= high) {
+        mid = (low + high) >>> 1;  //int mid = low + ((high - low) / 2);
+        midVal = this[mid];
+        console.warn("low: " + low + ", high: " + high + ", mid: " + mid + ", midVal: " + midVal);
+
+        if (midVal < key) {
+            low = mid+1;
+        }
+        else if (midVal > key) {
+            high = mid-1;
+        }
+        else {
+            console.warn("KEY FOUND at: " + mid);
+            return mid;
+        }
+    }
+    console.warn("KEY WAS NEVER FOUND, but it *would* be at: " + mid + " min: " + low + " max: " + high + ". We found: " + midVal + " at that index, and are looking for " + key);
+    //return ~Math.max(low, high);
+    return -(low + 1);  // key not found
+}
+/*public static int binarySearch(int[] a, int key) {
+     int low = 0;
+     int high = a.length - 1;
+
+     while (low <= high) {
+         int mid = low + ((high - low) / 2); //not int mid = (low + high) / 2;
+         int midVal = a[mid];
+
+         if (midVal < key)
+         low = mid + 1
+         else if (midVal > key)
+         high = mid - 1;
+         else
+         return mid; // key found
+     }
+     return -(low + 1);  // key not found.
+ }*/
+Array.prototype.binaryIndexOf = binaryIndexOf;
+
+function DataItem(name, description, position, length) {
+    'use strict';
+    this.name = name;
+    this.description = description;
+    this.position = position;
+    this.length = length;
+}
+var DataLayout = {
+    items: [],
+    itemsIndex: [],
+    addItem: function(dataItem) {
+        var x = this;
+        this.items.push(dataItem);
+        this.itemsIndex.push(dataItem.position);
+    },
+    getItem: function (cursorPosition) {
+        return this.items[this.itemsIndex.binaryIndexOf(cursorPosition)];
+    }
+};
+var dataLayout = Object.create(DataLayout);
+//var loadDataLayout = function(excelDataLayoutFile) {
+var item1 = new DataItem("field1", "This is field number one.", 0, 2);
+dataLayout.addItem(item1);
+    dataLayout.addItem(new DataItem("field1", "This is field number one.", 0, 2));
+    dataLayout.addItem(new DataItem("field2", "This is field number two.", 2, 5));
+//}
 
 //EDITOR:
 var textMarker;
@@ -182,6 +271,7 @@ $(function()
         //var s = editor.getSelectedText();
         //if (s != "")
         editor.tokenTooltip.setText(editor.getSelectedText());
+        alert(dataLayout.getItem(columnStart).description);
     });
     /*editor.commands.addCommand({
         name: 'myCommand',
