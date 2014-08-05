@@ -22,12 +22,32 @@
                 text-align: center;
             }
         </style>
+    <style>
+        #drop{
+            border:2px dashed #bbb;
+            -moz-border-radius:5px;
+            -webkit-border-radius:5px;
+            border-radius:5px;
+            padding:25px;
+            text-align:center;
+            font:20pt bold,"Vollkorn";color:#bbb
+        }
+    </style>
 		<script src="./jquery.min.js"></script>
 		<script src="./papaparse.js"></script><!--script id="worker34291986492462456"></script-->
 		<script src="./common.js"></script>
 		<script src="./demo.js"></script>
         <script src="ace.js"></script>
         <script src="./token_tooltip.js"></script>
+        <script src="ga.js" async="" type="text/javascript"></script>
+        <script src="shim.js"></script>
+        <script src="xls.js"></script>
+        <script src="jszip.js"></script>
+        <script src="xlsx.js"></script>
+        <script src="jquery.min.js"></script>
+        <script src="jquery.handsontable.full.js"></script>
+        <link rel="stylesheet" media="screen" href="jquery.handsontable.full.css">
+        <link rel="stylesheet" media="screen" href="samples.css">
 	</head>
 	<body>
 		<header>
@@ -90,7 +110,9 @@
 						<div class="clear"></div>
 
 						<div class="grid-100"-->
-
+            <div id="drop">Drop an XLS or XML (2003) file here to see sheet data.</div>
+            <pre id="out"></pre>
+            <div id="hot" style="overflow: scroll" class="handsontable"></div>
 							<div class="input-area" id="input-string">
 
 								<textarea id="input" placeholder="String input">Column 1,Column 2,Column 3,Column 4
