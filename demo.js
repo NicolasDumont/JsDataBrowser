@@ -37,6 +37,7 @@ var parseConfig = {
  * arr.splice(Math.abs(arr.binaryIndexOf(3)), 0, 3);
  * document.body.textContent = JSON.stringify(arr);
  */
+var parsedDataLayout;
 binaryIndexOf = function (lookupValue) {
     'use strict';
 
@@ -103,14 +104,23 @@ var DataLayout = {
     },
     getItem: function (cursorPosition) {
         return this.items[this.itemsIndex.binaryIndexOf(cursorPosition)];
+    },
+    fieldRegex: new RegExp('^sk\.[1-9]{1,2}$|^0.|[1-9]{1,2}\.[0-9]{1,2}', 'i'),
+    fill: function(csvData) {
+        csvData.forEach(function(element){
+            if(this.fieldRegex.test(element[0].trim())) {
+                console.log("Will keep dataLayout line starting with " + element[0].trim());
+                this.addItem(new DataItem(element[1].trim(), element[10].trim(), element[4].trim(), element[3].trim()));
+            }
+        }, this);
     }
 };
 var dataLayout = Object.create(DataLayout);
 //var loadDataLayout = function(excelDataLayoutFile) {
 //var item1 = new DataItem("field1", "This is field number one.", 0, 2);
 //dataLayout.addItem(item1);
-    dataLayout.addItem(new DataItem("field1", "This is field number one.", 0, 2));
-    dataLayout.addItem(new DataItem("field2", "This is field number two.", 2, 5));
+    //dataLayout.addItem(new DataItem("field1", "This is field number one.", 0, 2));
+    //dataLayout.addItem(new DataItem("field2", "This is field number two.", 2, 5));
 //}
 
 //EDITOR:
@@ -380,19 +390,6 @@ function to_csv(workbook) {
     return result.join("\n");
 }
 
-function to_csv(workbook) {
-    var result = [];
-    workbook.SheetNames.forEach(function(sheetName) {
-        var csv = XLS.utils.sheet_to_csv(workbook.Sheets[sheetName]);
-        if(csv.length > 0){
-            result.push("SHEET: " + sheetName);
-            result.push("");
-            result.push(csv);
-        }
-    });
-    return result.join("\n");
-}
-
 function to_formulae(workbook) {
     var result = [];
     workbook.SheetNames.forEach(function(sheetName) {
@@ -415,7 +412,7 @@ function b64it() {
 
 function process_wb(wb) {
     if(use_worker) XLS.SSF.load_table(wb.SSF);
-    var output = "";
+    var parsedXls = "";
     /*switch(get_radio_value("format")) {
         case "json":
             output = JSON.stringify(to_json(wb), 2, 2);
@@ -424,12 +421,20 @@ function process_wb(wb) {
             output = to_formulae(wb);
             break;
         default:*/
-            output = to_csv(wb);
-    output = to_html(wb);
+        parsedXls = to_csv(wb);
+    //output = to_html(wb);
     //}
-    if(out.innerText === undefined) out.textContent = output;
-    else out.innerText = output;
-    if(typeof console !== 'undefined') console.log("output", new Date());
+    /*if(xlsToCsv.innerText === undefined) xlsToCsv.textContent = output;
+    else xlsToCsv.innerText = output;
+    if(typeof console !== 'undefined') console.log("output", new Date());*/
+    //Papaparse the csv
+    start = now();
+    parsedDataLayout = Papa.parse(parsedXls); //, parseConfig);
+    /*console.log("Synchronous results:", parsedDataLayout);
+    if (parseConfig.worker || parseConfig.download)
+        console.log("Running...");*/
+    xlsToCsvParsed.innerText = Papa.unparse(parsedDataLayout);
+    dataLayout.fill(parsedDataLayout.data);
 }
 
 function handleDrop(e) {
@@ -456,7 +461,7 @@ function handleDrop(e) {
                 //wb = (XL=XLSX).read(arr, {type:"binary"});
                 wb = (XL=XLSX).read(data, {type:"binary"});
             else
-                alert("Please upload a xls or a xlsx file!")
+                alert("Please upload a xls or xlsx file!")
             console.log(wb);
             process_wb(wb); //, fmt);
 
