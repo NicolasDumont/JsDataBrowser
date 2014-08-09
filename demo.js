@@ -105,11 +105,11 @@ var DataLayout = {
     getItem: function (cursorPosition) {
         return this.items[this.itemsIndex.binaryIndexOf(cursorPosition)];
     },
-    fieldRegex: new RegExp('^sk\.[1-9]{1,2}$|^0.|[1-9]{1,2}\.[0-9]{1,2}', 'i'),
+    fieldRegex: /^sk\.[1-9]{1,2}$|^0\.|^[1-9]{1,2}\.[0-9]{1,2}\./i,
     fill: function(csvData) {
         csvData.forEach(function(element){
-            if(this.fieldRegex.test(element[0].trim())) {
-                console.log("Will keep dataLayout line starting with " + element[0].trim());
+            if(this.fieldRegex.exec(element[0].trim()) != null) {
+                console.log("Will keep dataLayout line starting with " + element[0].trim() + " : " + element[1].trim());
                 this.addItem(new DataItem(element[1].trim(), element[10].trim(), element[4].trim(), element[3].trim()));
             }
         }, this);
